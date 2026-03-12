@@ -5,12 +5,14 @@ import '../services/api_service.dart';
 // 1. Model State untuk menyimpan data dompet
 class WalletState {
   final double balance;
+  final String name;
   final String accountNumber;
   final List<dynamic> transactions;
   final bool isLoading;
 
   WalletState({
     this.balance = 0,
+    this.name = 'User',
     this.accountNumber = '-',
     this.transactions = const [],
     this.isLoading = false,
@@ -18,12 +20,14 @@ class WalletState {
 
   WalletState copyWith({
     double? balance,
+    String? name,
     String? accountNumber,
     List<dynamic>? transactions,
     bool? isLoading,
   }) {
     return WalletState(
       balance: balance ?? this.balance,
+      name: name ?? this.name,
       accountNumber: accountNumber ?? this.accountNumber,
       transactions: transactions ?? this.transactions,
       isLoading: isLoading ?? this.isLoading,
@@ -65,6 +69,7 @@ class WalletNotifier extends StateNotifier<WalletState> {
 
       state = state.copyWith(
         balance: parsedBalance,
+        name: data['name'] ?? 'User',
         accountNumber: data['accountNumber'] ?? '-',
         transactions: [
            ...?data['sentTransactions'],

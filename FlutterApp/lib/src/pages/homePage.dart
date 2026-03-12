@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_wallet_app/src/theme/light_color.dart';
 import 'package:flutter_wallet_app/src/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_wallet_app/src/widgets/top_nav.dart';
@@ -6,15 +7,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter/gestures.dart';
 import 'dart:async';
+import '../providers/wallet_provider.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   final PageController _pageController1 = PageController();
 
   Timer? _autoSlideTimer;
@@ -78,6 +80,14 @@ class _HomePageState extends State<HomePage> {
   // HEADER CARD UTAMA
   // =======================
   Widget _mainHeaderCard() {
+    // Watch wallet state for real data
+    final walletState = ref.watch(walletProvider);
+    
+    // Formatting helper
+    // Assuming balance is double, basic formatting:
+    final balanceString = walletState.balance.toStringAsFixed(0).replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.');
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -155,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   children: [
                     Text(
-                      "Account: 734 - 123 - 0048",
+                      "Account: ${walletState.accountNumber}",
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -205,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "IDR",
+                          "IDR $balanceString",
                           style: GoogleFonts.poppins(
                             fontSize: 24,
                             fontWeight: FontWeight.w600,
@@ -676,6 +686,9 @@ class _HomePageState extends State<HomePage> {
   // =======================
   @override
   Widget build(BuildContext context) {
+    // Watch wallet provider (which contains name)
+    final walletState = ref.watch(walletProvider);
+
     return Scaffold(
       extendBody: true,
       backgroundColor: const Color.fromARGB(255, 249, 251, 255),
@@ -734,7 +747,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               TextSpan(
-                                text: "KEVIN YULIAN PAMUNGKAS",
+                                text: walletState.name.toUpperCase(),
                                 style: GoogleFonts.inter(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w700,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_wallet_app/src/theme/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'src/pages/homePage.dart';
 import 'src/pages/transferPage.dart';
+import 'src/widgets/auth_wrapper.dart';
 import 'src/pages/paymentPage.dart';
 import 'src/pages/transfer/bca_account_page.dart';
 import 'src/pages/transfer/other_banks_page.dart';
@@ -14,7 +16,13 @@ import 'src/pages/transfer/bagibagi_page.dart';
 import 'src/pages/transfer/import_beneficiary_page.dart';
 import 'src/pages/transfer/underlying_documents_page.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -29,9 +37,8 @@ class MyApp extends StatelessWidget {
           Theme.of(context).textTheme,
         ),
       ),
-      routes: <String, WidgetBuilder>{
-        '/': (_) => HomePage(),
-      },
+      // Ganti route '/' dengan home: AuthWrapper() untuk cek login di awal
+      home: const AuthWrapper(),
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/transfer':
