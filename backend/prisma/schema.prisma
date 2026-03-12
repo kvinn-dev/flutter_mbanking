@@ -13,6 +13,8 @@ model User {
   fullName  String
   createdAt DateTime @default(now())
   wallet    Wallet?
+
+  @@map("User")
 }
 
 model Wallet {
