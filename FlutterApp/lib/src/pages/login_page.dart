@@ -23,6 +23,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   void _handleLogin() {
+    FocusScope.of(context).unfocus(); // Tutup keyboard agar SnackBar terlihat
     if (_formKey.currentState!.validate()) {
       ref.read(authProvider.notifier).login(
             _emailController.text.trim(),
@@ -38,6 +39,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     // Listen for errors
     ref.listen<AuthState>(authProvider, (previous, next) {
       if (next.errorMessage != null) {
+        print("UI Error Message: ${next.errorMessage}"); // DEBUG LOG
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(next.errorMessage!),

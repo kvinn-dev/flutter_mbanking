@@ -55,13 +55,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> login(String email, String password) async {
+    print("Login attempt for: $email"); // DEBUG LOG
     state = state.copyWith(isLoading: true, errorMessage: null);
     
     try {
       final response = await _apiService.login(email, password);
+      print("Login Response: ${response.statusCode} ${response.data}"); // DEBUG LOG
       final data = response.data;
       
       if (data != null && data['token'] != null) {
+        print("Token found! Logging in..."); // DEBUG LOG
         // Save Token
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('auth_token', data['token']);
@@ -73,12 +76,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
         state = state.copyWith(isAuthenticated: true, isLoading: false);
       } else {
+        print("Login failed: No token in response"); // DEBUG LOG
         state = state.copyWith(
           isLoading: false, 
           errorMessage: 'Invalid response from server'
         );
       }
     } catch (e) {
+      print("Login Error: $e"); // DEBUG LOG
       state = state.copyWith(
         isLoading: false, 
         errorMessage: 'Login failed. Please check your credentials.'
